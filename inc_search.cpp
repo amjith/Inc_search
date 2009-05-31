@@ -13,12 +13,14 @@ using namespace std;
 
 vector<string > in_array;
 
-vector<int > look_for(const string search_term, const int pos, const vector<string > &in_array, vector<int > &indexes)
+vector<int > look_for(const string search_term, int pos, const vector<string > &in_array, vector<int > &indexes)
 {
 	vector<int > new_indexes;
 	char compare_ch, ch;
-	if (pos < 0)
+	if (search_term.empty())
 		return new_indexes;
+	if (pos < 0)
+	   	pos = 0;
 	for (vector<int >::iterator index = indexes.begin(); index != indexes.end(); ++index)
 	{
 		compare_ch = (in_array[*index])[pos];
@@ -119,7 +121,13 @@ int main()
 	initscr();
 	cbreak();
 	noecho();
-	
+
+	for (vector<int >::iterator it = indices.begin(); it != indices.end(); ++it )
+	{
+		printw("%s\n",in_array[*it].c_str());
+		//printf("%s\n",in_array[*it].c_str());
+	}
+
 	// Keep getting characters until esc key is pressed.
 	while (1)
 	{
@@ -127,40 +135,38 @@ int main()
 		ch = getch();
 		if (ESC == ch) // If current char is ESC, break out of loop
 			break;
-		// If backspace is pressed then pop the last entry from the search_term
-		/* Worry about backspace later
-		if (BCKSPC == ch)
+		// If backspace is pressed then pop the last char from the search_term
+		else if (BCKSPC == ch)
 		{
-			if (!search_term.empty()) // Do not try to pop an empty string
-				search_term.resize(search_term.length()-1);  // Remove the last char from the string
-			look_for(search_term.length()-1, ch, indices); // Call the search routine to narrow down the list. The narrowed down list is filled inside the indicies vector.
+			if ( !search_term.empty() ) // Do not try to erase an empty string. cursor_pos can never be less than 0
+			{
+				search_term.erase(cursor_pos - 1);  // Remove the char from the string
+				if (cursor_pos > 0)
+					cursor_pos--;
+			}
+			while (possibles.size() > cursor_pos+1)
+				possibles.pop();
 		}
-		*/
-		if ( (ch >= 'a' && ch <= 'z') || (ch >='A' && ch <= 'Z') || (ch >='0' && ch <='9') )
+		else if ( (ch >= 'a' && ch <= 'z') || (ch >='A' && ch <= 'Z') || (ch >='0' && ch <='9') )
 		{
 			search_term.push_back(ch); // store the current key to the search string
 			cursor_pos++;
-			pos = cursor_pos - 1;
 		}
 		//printw("Key Pressed:%d\n", ch);
 		//printw("Search Results:\n");
 
+		pos = cursor_pos - 1;
 		while(pos < search_term.size())
 		{
 			indices = look_for(search_term, pos, in_array, possibles.top());
 			pos++;
-			if(!indices.empty())
-				possibles.push(indices);
+			possibles.push(indices);
 			
 		}
-
-
+		
 		vector<int > cur_results;
 
-		if (!search_term.empty())
-			cur_results = indices;
-		else
-			cur_results = possibles.top();
+		cur_results = possibles.top();
 
 		//Clear the screen before printing the results
 		clear();
@@ -169,6 +175,7 @@ int main()
 		for (vector<int >::iterator it = cur_results.begin(); it != cur_results.end(); ++it )
 		{
 			printw("%s\n",in_array[*it].c_str());
+			//printf("%s\n",in_array[*it].c_str());
 		}
 
 		/*if (!search_term.empty() && !indices.empty())
