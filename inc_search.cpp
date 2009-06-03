@@ -31,47 +31,6 @@ vector<int > look_for(const string search_term, int pos, const vector<string > &
 	return new_indexes;
 }
 
-/*
-void look_for(int pos, char ch, vector<int > &indices)
-{
-	if(pos < 0 ) // if search_string is empyt (pressing backspace to begin with ), then do nothing.
-		return;
-	// For each character pressed, we create a new list node.
-	// Each node has a vector of ints.
-	// We narrow down the in_array entries that match and add the 
-	// index to the vector.
-
-	static int prev_pos = -1; // This has to be -1 to begin with.
-
-	// If the incoming pos is less than or equal to pos, then a back-space key is pressed. 
-	// Pop the stack to remove the search possibilities with the prev character pressed.
-	if (pos <= prev_pos) 
-		possibles.pop();
-
-	// A vector to store the new indicies after we narrowed it down using the latest char.
-	vector<int > new_indices;
-
-	// Last node's vector has the most latest narrowed down indexes.
-	// For each index in this last node's vector, we look at the corresponding
-	// in_array entry and see if it matches the new character. 
-	// Matching entries' indexes are added to a new vector which will then 
-	// become the latest linked list node.
-	if (!possibles.empty())
-		indices = possibles.top();
-	for( vector<int >::iterator i = indices.begin(); i !=indices.end(); ++i)
-	{
-		char compare_ch = (in_array[*i].c_str())[pos]; // The compare_ch is the character at the 'pos' position of the input string
-		if (ch == compare_ch)
-			new_indices.push_back(*i);
-	}
-	if (pos > prev_pos)
-	{
-		indices = new_indices; // Do not update the indices with the new_indices if BCKSPC is pressed
-		possibles.push(indices);
-	}
-	prev_pos = pos;
-}
-*/
 int main()
 {
 	// Initialize the input array of strings.
@@ -152,8 +111,6 @@ int main()
 			search_term.push_back(ch); // store the current key to the search string
 			cursor_pos++;
 		}
-		//printw("Key Pressed:%d\n", ch);
-		//printw("Search Results:\n");
 
 		pos = cursor_pos - 1;
 		while(pos < search_term.size())
@@ -178,21 +135,6 @@ int main()
 			//printf("%s\n",in_array[*it].c_str());
 		}
 
-		/*if (!search_term.empty() && !indices.empty())
-		{
-			// Print the narrowed down list everytime a key is pressed
-			clear();
-			for_each(indices.begin(), indices.end(), print_results);
-		}
-		else if(search_term.empty())
-		{
-			index = 0;
-			for(vector<string >::iterator str_it = in_array.begin(); str_it != in_array.end(); ++str_it)
-			{
-				indices.push_back(index++);
-			}
-			for_each(indices.begin(), indices.end(), print_results);
-		}*/
 	}
 	endwin();
 	return 0;
